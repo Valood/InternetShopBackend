@@ -13,4 +13,5 @@ urlpatterns = [
     path("order", OrderApiView.as_view()),
     path("orders", OrdersApiView.as_view()),
 
+    path("cart", CartApiView.as_view()),
 ]

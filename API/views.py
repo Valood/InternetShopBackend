@@ -41,7 +41,6 @@ class OrderApiView(APIView):
         return Response("create", status=status.HTTP_200_OK)
 
 class OrdersApiView(APIView):
-
     def get(self, request):
         response_lst = []
         user = request.user
@@ -54,3 +53,18 @@ class OrdersApiView(APIView):
             response_lst.append(order_dct)
         return Response(response_lst, status=status.HTTP_200_OK)
 
+
+class CartApiView(APIView):
+    def get(self, request):
+        response_lst = []
+        user = request.user
+        products_in_cart = ProductCart.objects.filter(user=user)
+        for productCart_object in products_in_cart:
+            response_lst.append(ProductSerializer(productCart_object.product).data)
+        return Response(response_lst, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        data = request.data
+        product = Product.objects.get(id=data["product"])
+        ProductCart.objects.create(user=request.user, product=product)
+        return Response(ProductSerializer(product).data, status=status.HTTP_200_OK)
