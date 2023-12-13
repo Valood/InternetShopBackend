@@ -27,11 +27,11 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=255, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
-    role = serializers.CharField(max_length=30, read_only=True)
+    name = serializers.CharField(max_length=255, read_only=True)
     id = serializers.ReadOnlyField()
 
     class Meta:
-        fields = ["email", "password"]
+        fields = ["email", "password", "name"]
 
     def validate(self, data):
         email = data.get("email")
@@ -62,7 +62,8 @@ class LoginSerializer(serializers.Serializer):
         return {
             "email": user.email,
             "token": user.token,
-            "id": user.id
+            "id": user.id,
+            "name": user.name
         }
 
 
