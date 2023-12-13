@@ -53,3 +53,4 @@ class OrdersApiView(APIView):
                 order_dct["products"].append(ProductSerializer(product_order.product).data)
             response_lst.append(order_dct)
         return Response(response_lst, status=status.HTTP_200_OK)
+
