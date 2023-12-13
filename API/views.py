@@ -31,11 +31,6 @@ class ProductsApiView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class OrderApiView(APIView):
-    def get(self, request, pk):
-        order = Order.objects.get(id=pk)
-        products = ProductOrder.filter(order)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
     def post(self, request):
         author = request.user
         products_index = request.data["products"]
@@ -44,3 +39,17 @@ class OrderApiView(APIView):
         for index in products_index:
             ProductOrder.objects.create(product_id=index, order=order)
         return Response("create", status=status.HTTP_200_OK)
+
+class OrdersApiView(APIView):
+
+    def get(self, request):
+        response_lst = []
+        user = request.user
+        user_orders = Order.objects.filter(user=user)
+        for order in user_orders:
+            order_dct = {"id": order.id, "date": order.date, "orders": []}
+            user_product_orders = ProductOrder.objects.filter(order=order)
+            for product_order in user_product_orders:
+                order_dct["products"].append(ProductSerializer(product_order.product).data)
+            response_lst.append(order_dct)
+        return Response(response_lst, status=status.HTTP_200_OK)

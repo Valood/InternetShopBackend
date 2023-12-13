@@ -11,5 +11,6 @@ urlpatterns = [
 
     path("order/<int:pk>", OrderApiView.as_view()),
     path("order", OrderApiView.as_view()),
+    path("orders", OrdersApiView.as_view()),
 
 ]
