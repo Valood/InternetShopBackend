@@ -1,5 +1,5 @@
 from django.db import models
-from ..Auth.models import *
+from Auth.models import *
 
 # Create your models here.
 
