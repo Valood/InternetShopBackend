@@ -36,14 +36,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     name = models.CharField(max_length=30, null=True)
     avatar = models.TextField(blank=True, null=True)
-    sex = models.CharField(max_length=10, null=True)
-    age = models.IntegerField(null=True)
-    sport_type = models.CharField(max_length=30, null=True)
-    training_days = models.CharField(max_length=30, null=True)
-    contacts = models.CharField(max_length=50, null=True)
+
 
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
