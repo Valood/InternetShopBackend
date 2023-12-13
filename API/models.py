@@ -13,6 +13,7 @@ class Product(models.Model):
 class Order(models.Model):
     status = models.CharField(max_length=30, default="Обрабатывается")
     date = models.DateTimeField()
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="order_user", null=True)
 
 
 class ProductOrder(models.Model):

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework import status
@@ -30,12 +32,15 @@ class ProductsApiView(APIView):
 
 class OrderApiView(APIView):
     def get(self, request, pk):
-        product = Order.objects.get(id=pk)
-        serializer = OrderSerializer(product)
+        order = Order.objects.get(id=pk)
+        products = ProductOrder.filter(order)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         author = request.user
         products_index = request.data["products"]
-        ащ
-        return Response({}, status=status.HTTP_200_OK)
+        order = Order(user=author, date=datetime.now())
+        order.save()
+        for index in products_index:
+            ProductOrder.objects.create(product_id=index, order=order)
+        return Response("create", status=status.HTTP_200_OK)
