@@ -6,6 +6,8 @@ from .views import *
 urlpatterns = [
     path("product/<int:pk>", ProductApiView.as_view()),
     path("product", ProductApiView.as_view()),
+    path("product/<int:pk>/comments", CommentApiView.as_view()),
+    path("product/comment", CommentApiView.as_view()),
 
     path("products", ProductsApiView.as_view()),
 

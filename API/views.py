@@ -49,7 +49,7 @@ class OrdersApiView(APIView):
             order_dct = {"id": order.id, "date": order.date, "orders": []}
             user_product_orders = ProductOrder.objects.filter(order=order)
             for product_order in user_product_orders:
-                order_dct["products"].append(ProductSerializer(product_order.product).data)
+                order_dct["orders"].append(ProductSerializer(product_order.product).data)
             response_lst.append(order_dct)
         return Response(response_lst, status=status.HTTP_200_OK)
 
@@ -68,3 +68,21 @@ class CartApiView(APIView):
         product = Product.objects.get(id=data["product"])
         ProductCart.objects.create(user=request.user, product=product)
         return Response(ProductSerializer(product).data, status=status.HTTP_200_OK)
+
+
+class CommentApiView(APIView):
+    def get(self, request, pk):
+        response_lst = []
+        product = Product.objects.get(id=pk)
+        comments = Comment.objects.filter(product=product)
+        for comment in comments:
+            response_lst.append(CommentSerializer(comment).data)
+        return Response(response_lst, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        data = request.data
+        serializer = CommentSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save(author=request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
