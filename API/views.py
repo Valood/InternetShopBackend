@@ -76,7 +76,9 @@ class CommentApiView(APIView):
         product = Product.objects.get(id=pk)
         comments = Comment.objects.filter(product=product)
         for comment in comments:
-            response_lst.append(CommentSerializer(comment).data)
+            data_dct = dict(CommentSerializer(comment).data)
+            data_dct["name"] = comment.author.name
+            response_lst.append(data_dct)
         return Response(response_lst, status=status.HTTP_200_OK)
 
     def post(self, request):
