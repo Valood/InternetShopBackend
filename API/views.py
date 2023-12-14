@@ -14,7 +14,15 @@ class ProductApiView(APIView):
     def get(self, request, pk):
         product = Product.objects.get(id=pk)
         serializer = ProductSerializer(product)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        product_ratings = ProductRating.objects.filter(product=product).values_list('rating', flat=True)
+        rating_lst = list(map(lambda x: x.rate, product_ratings))
+
+        return_data = dict(serializer.data)
+        if len(rating_lst) != 0:
+            return_data["rating"] = sum(rating_lst)/len(rating_lst)
+        else:
+            return_data["rating"] = 0
+        return Response(return_data, status=status.HTTP_200_OK)
 
     def post(self, request):
         data = request.data
@@ -38,6 +46,7 @@ class OrderApiView(APIView):
         order.save()
         for index in products_index:
             ProductOrder.objects.create(product_id=index, order=order)
+        ProductCart.objects.filter(user=author).delete()
         return Response("create", status=status.HTTP_200_OK)
 
 class OrdersApiView(APIView):
@@ -83,6 +92,9 @@ class CommentApiView(APIView):
 
     def post(self, request):
         data = request.data
+        rating = Rating(author=request.user, rate=data["rating"])
+        rating.save()
+        ProductRating.objects.create(product_id=data["product"], rating=rating)
         serializer = CommentSerializer(data=data)
         if serializer.is_valid():
             serializer.save(author=request.user)

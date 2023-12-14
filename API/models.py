@@ -24,7 +24,7 @@ class ProductOrder(models.Model):
 class Comment(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="author")
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="comment_product")
-    message = models.TextField(max_length=300, null=True)
+    message = models.TextField(max_length=300, null=True, blank=True)
 
 
 class Cart(models.Model):
@@ -35,3 +35,11 @@ class ProductCart(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="productCart_product", null=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="productCart_cart", null=True)
 
+
+class Rating(models.Model):
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="rating_user", null=True)
+    rate = models.IntegerField()
+
+class ProductRating(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="productRating_product", null=True)
+    rating = models.ForeignKey(Rating, on_delete=models.CASCADE, related_name="rating", null=True)
